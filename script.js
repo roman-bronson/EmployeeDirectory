@@ -55,19 +55,6 @@ function sortTableByColumn(table, column, asc = true) {
     currentTh.classList.add("th-active"); // Add the active class
 }
 
-function searchByColumn(table, column) {
-    const tableRows = table.querySelectorAll('tbody tr');
-    const columnIndex = Array.from(table.querySelectorAll('thead th')).map(headerCell => headerCell.innerHTML).indexOf(column);
-    const searchableCells = Array.from(tableRows).map(row => row.querySelectorAll("td")[columnIndex]);
-    const searchBar = document.getElementById("searchBar");
-
-    searchBar.addEventListener("input", () => {
-        const searchQuery = searchBar.value.toLowerCase();
-
-        console.log(searchableCells);
-    });
-}
-
 fetch('allUserInformation.json')
     .then(res => res.json())
     .then(data => {
@@ -122,6 +109,17 @@ fetch('allUserInformation.json')
         const searchBar = document.getElementById("searchBar");
 
         searchBar.addEventListener("input", () => {
-            console.log(searchableCells);
+            const searchQuery = searchBar.value.toLowerCase();
+
+
+            for (const tableCell of searchableCells) {
+                const row = tableCell.closest("tr");
+                const value = tableCell.textContent.toLowerCase().replace("-", "");
+                row.style.visibility = null;
+
+                if (value.slice(0, searchQuery.length) != searchQuery) {
+                    row.style.visibility = "collapse";
+                }
+            }
         });
 });
